@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<!---------------
+  James Holbert
+  movraxrsp@pm.me
+  June 2020
+  ----------------
+  
+  the user enters data in an HTML form,
+  clicks a link (anchor element),
+  our jquery creates a json object representing the form data,
+  the browser opens a standard OS save file dialog,
+  the json object is saved as a string in the file
+  
+  we could then use the JSON string in the file to update a database
+  
+  depending on the database system, we may need some JSON to XML middleware, which is already out there
+  i'm just not already familiar with any particular tool
+
+  we could also write code here to create the properly formatted XML
+  as the output too... but who in tf wants to do that???
+  
+  there also may be existing XML generator libraries to use here, but i'm unaware of any
+  
+  so there's two todos:
+  
+  TODO: json-to-xml tool and javascript-based XML generator
+
+  we use jQuery here  
+  the code is at the end of this file
+  vanilla javascript is in another file in this repo (eventually)
+  
+  dependencies: html for the download attribute of the anchor element
+-->
+
+<html><head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+
+<form id='form'>
+<label for='k1'>key1: </label>
+<input id='k1' name='k1' type='text'>
+<br>
+<label for='k2'>key2: </label>
+<input id='k2' name='k2' type='text'>
+</form>
+<br>
+<a id='save'>save form data as a json string on local filesystem</a>
+
+<!------------------
+  our jquery code
+-------------------->
+<script>
+
+// a reference to the anchor element
+saveAnchor = $('#save')
+
+// use the html5 attribute download on the anchor
+
+// the second argument is the suggested file name
+// that the save file dialog will suggest
+
+// of course, we could set it programmaticay,
+// for example based on some of the form's field values
+
+saveAnchor.attr('download', 'ourJsonFile.json');
+
+// the anchor elements click event listener
+saveAnchor.on('click', () =>
+{
+  // serializeArray() takes the form element
+  // and returns an array of javascript objects
+
+  // each member in the array is a javascript object representing
+  // one of the fields in the form
+
+  // if the user entered 'v1' for the k1 field
+  // and 'v2' for the k2 field,
+  // serializeArry() returns
+  /*
+      [
+        {name: 'k1', value: 'v1'},
+        {name: 'k2', value: 'v2'}
+      ]
+  */
+
+  // but we want a javascript object like this:
+  /*
+    {
+      'k1': 'v1',
+      'k2': 'v2'
+    }
+  */
+
+  // the javascript object we'll make from the serializeArray() array
+  var formJSObject = {}
+
+  // ue the each() method to loop through the serializeArray() array
+
+  // the first argument is the array
+  // the second argument is the function to apply to the current member of the array
+
+  // i is the index of the array, which we don't need use here
+  // field is the current member of the array,
+  //    which in our case is the javascript object that represents one of the input elements in the form
+  //    see lines 72 to 75.
+
+  $.each($('#form').serializeArray(), (i, field) => { formJSObject[field.name] = field.value; })
+
+  // now, formJSObject should look like the javascript object in lines 80 to 83
+
+  // set the anchor's href value to use the data: scheme
+  // as plain text data using utf-8 encoding
+  // i tried using data:application/json, but it didn't work, not sure why
+
+  saveAnchor.attr(
+      "href",
+      "data:text/plain;charset=utf-8," // now we need to attach the JSON object as the data
+      + JSON.stringify(formJSObject));
+  // we may need to use encodeURIComponent to handle special characters,
+  // but we'll leave it out for now, it's ok for simple data
+}); // end of saveAnchor's click event Listener
+</script>
+</body></html>
