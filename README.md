@@ -12,8 +12,8 @@ later
 
 ### interesting active project: the native file system api
 
-ere is an interesting article on [web.dev](https://web.dev): [The Native File System API: Simplifying access to local files](https://web.dev/native-file-system/)
+interesting article on [web.dev](https://web.dev): [The Native File System API: Simplifying access to local files](https://web.dev/native-file-system/)
 
-he new Native File System API allows web apps to read or save changes directly to files and folders on the user's device
+the new Native File System API allows web apps to read or save changes directly to files and folders on the user's device
 
 its repo: [WICG/native-file-system](https://github.com/WICG/native-file-system)
